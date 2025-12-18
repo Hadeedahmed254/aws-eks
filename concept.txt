@@ -1,0 +1,103 @@
+Associate OIDC provider
+
+eksctl utils associate-iam-oidc-provider --cluster hadeed-first-cluster --approve
+
+
+✅ Correct: This tells AWS to trust tokens issued by your EKS cluster.
+
+At this stage: no identities or roles yet, just establishing the trust bridge (OIDC).
+
+Create IAM policy
+
+✅ Correct: You create a policy (e.g., AWSLoadBalancerControllerIAMPolicy) that defines what the controller can do in AWS.
+
+Example: Create/load balancers, target groups, listeners.
+
+Create ServiceAccount + IAM Role + attach policy
+
+eksctl create iamserviceaccount \
+  --cluster=hadeed-first-cluster \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --attach-policy-arn=arn:aws:iam::<account-id>:policy/AWSLoadBalancerControllerIAMPolicy \
+  --approve
+
+
+✅ Correct: This does multiple things automatically:
+
+Creates the ServiceAccount in Kubernetes (aws-load-balancer-controller in kube-system).
+
+Creates an IAM Role in AWS.
+
+Attaches the policy to that role.
+
+Updates the trust policy of the IAM role to allow this ServiceAccount via OIDC to assume it.
+
+✅ Important: The trust policy update relies on the OIDC provider you registered in step 1.
+
+Deploy ALB controller pod using Helm
+
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  --set clusterName=hadeed-first-cluster \
+  --set region=us-east-1 \
+  --set vpcId=<your-vpc-id>
+
+
+✅ Correct:
+
+Pods are deployed in kube-system.
+
+Helm uses your existing ServiceAccount (serviceAccount.create=false) — very important, otherwise the pod would not have AWS permissions.
+
+Kubernetes automatically gives the pod a JWT token for that ServiceAccount.
+
+Pod talks to AWS
+
+✅ Correct:
+
+Pod reads the JWT token from the ServiceAccount.
+
+Pod presents the token to AWS STS.
+
+AWS checks OIDC provider + ServiceAccount identity (trust policy).
+
+Pod assumes the IAM role and receives temporary credentials.
+
+Pod can now securely call AWS APIs (create/manage ALBs).
+
+✅ Summary / mental model
+[OIDC provider registered] → AWS trusts EKS tokens
+      │
+      ▼
+[ServiceAccount + IAM Role + Policy created by eksctl]
+      │
+      ▼
+[Helm deploys pod using ServiceAccount]
+      │
+      ▼
+[Kubernetes injects JWT token into pod]
+      │
+      ▼
+[Pod presents token → AWS validates via OIDC → assumes IAM Role]
+      │
+      ▼
+[Pod can call AWS APIs securely]
+
+Notes / clarifications
+
+Step 3 is magic: eksctl create iamserviceaccount does 4 things at once: ServiceAccount + IAM Role + attach policy + trust policy update.
+
+OIDC is only used in the trust policy and for AWS to validate the JWT token.
+
+Helm only deploys the pod; it doesn’t create the role or ServiceAccount (because you told it not to).
+
+So yes ✅ — your flow is basically perfect. Only minor clarifications were needed about trust policy being part of step 3 and OIDC is used for AWS validation of JWT tokens.
+
+
+
+IRSA stands for:
+
+IAM Roles for Service Accounts
+
