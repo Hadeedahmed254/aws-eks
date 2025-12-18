@@ -7,6 +7,7 @@ curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-cont
 ```
 
 Create IAM Policy
+<img width="973" height="393" alt="Screenshot 2025-12-16 161504" src="https://github.com/user-attachments/assets/d1f6d33a-e1b2-4cc8-a0b6-cc6a6e87e453" />
 
 ```
 aws iam create-policy \
@@ -15,6 +16,7 @@ aws iam create-policy \
 ```
 
 Create IAM Role
+<img width="1462" height="462" alt="Screenshot 2025-12-16 161522" src="https://github.com/user-attachments/assets/a91bf0d0-6e68-46f4-9003-1823d61141e0" />
 
 ```
 eksctl create iamserviceaccount \
@@ -41,6 +43,7 @@ helm repo update eks
 ```
 
 Install
+<img width="1467" height="366" alt="Screenshot 2025-12-16 161927" src="https://github.com/user-attachments/assets/ce0c0839-ae4e-43ac-a077-61571003d2cf" />
 
 ```
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n kube-system \
@@ -52,7 +55,11 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller -n ku
 ```
 
 Verify that the deployments are running.
+<img width="1136" height="125" alt="Screenshot 2025-12-16 162044" src="https://github.com/user-attachments/assets/9196dd24-54d5-4687-aa93-f8a10c6636fb" />
 
 ```
 kubectl get deployment -n kube-system aws-load-balancer-controller
 ```
+<img width="1136" height="125" alt="Screenshot 2025-12-16 162044" src="https://github.com/user-attachments/assets/4b173937-8e45-42fe-9a42-e9116c8f115e" />
+<img width="1471" height="78" alt="Screenshot 2025-12-16 162056" src="https://github.com/user-attachments/assets/75663664-64c2-4436-8152-c0af3477343d" />
+
