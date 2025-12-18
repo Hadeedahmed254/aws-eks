@@ -24,3 +24,4 @@ kubectl apply -f all-resources.yaml
 
 done
 ![Screenshot 2023-08-03 at 7 57 15 PM](https://github.com/iam-veeramalla/aws-devops-zero-to-hero/assets/43399466/93b06a9f-67f9-404f-b0ad-18e3095b7353)
+<img width="1919" height="1010" alt="Screenshot 2025-12-16 162509" src="https://github.com/user-attachments/assets/8379a6e6-b354-4bca-a8e0-d51bd7575dbc" />
