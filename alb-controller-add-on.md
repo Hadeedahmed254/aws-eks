@@ -60,6 +60,6 @@ Verify that the deployments are running.
 ```
 kubectl get deployment -n kube-system aws-load-balancer-controller
 ```
-<img width="1136" height="125" alt="Screenshot 2025-12-16 162044" src="https://github.com/user-attachments/assets/4b173937-8e45-42fe-9a42-e9116c8f115e" />
+
 <img width="1471" height="78" alt="Screenshot 2025-12-16 162056" src="https://github.com/user-attachments/assets/75663664-64c2-4436-8152-c0af3477343d" />
 
